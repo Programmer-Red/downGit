@@ -31,7 +31,7 @@ class DownGit:
 
     def list_files(self, path=""):
         files = []
-        print(path)
+        path=path.lstrip('/')
         url = f"{self.api_url}/{path}" if path else self.api_url
         try:
             resp = self.session.get(url)
@@ -42,7 +42,7 @@ class DownGit:
                 if item["type"] == "file":
                     files.append(item["path"])
                 elif item["type"] == "dir":
-                    files.extend(self.list_files(item["path"]))
+                    files.extend(self.list_files(path+'/'+str((item["path"].strip("/").split("/"))[-1])))
             return files
         except Exception as e:
             print(f"[错误] 遍历失败: {e}")
