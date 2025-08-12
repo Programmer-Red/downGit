@@ -50,15 +50,26 @@ class DownGit:
 
     def download_file(self, file_path, save_dir):
         raw_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/{self.branches}/{file_path}"
-        file_path=str((file_path.strip('/').split('/'))[-1])
-        save_path = os.path.join(save_dir, file_path)
-        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        file_dir=file_path.strip('/').split('/')
+        if len(file_dir) > 1:
+            file_dir='/'.join((file_path.strip('/').split('/'))[2:-1])
+        else:
+            file_dir=""
+
+        file_name=str((file_path.strip('/').split('/'))[-1])
+        #print(file_dir,'|||',file_path)
+        save_path = os.path.join(save_dir,file_dir,file_name)
+        full_path=os.path.join(save_dir,file_dir)
+        #print(full_path)
+        os.makedirs(full_path, exist_ok=True)
+        
         try:
             r = self.session.get(raw_url)
             if r.status_code != 200:
                 print(f"[警告] 下载失败: {file_path} (HTTP {r.status_code})")
                 return
             with open(save_path, "wb") as f:
+                
                 f.write(r.content)
             print(f"[下载完成] {file_path}")
         except Exception as e:
