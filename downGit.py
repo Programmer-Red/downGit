@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 class DownGit:
     def __init__(self, repo_url):
         self.repo_url = repo_url.strip().rstrip("/")
-        self.repo_owner, self.repo_name, self.paths= self._parse_repo_url()
+        self.repo_owner, self.repo_name, self.paths,self.branches= self._parse_repo_url()
         self.paths='/'.join(self.paths)
         self.api_url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/contents/{self.paths}"
         self.session = requests.Session()
@@ -21,9 +21,10 @@ class DownGit:
         try:
             path_parts = urlparse(self.repo_url).path.strip("/").split("/")
             real_path=path_parts[4:]
+            branches=path_parts[3]
             if len(path_parts) < 2:
                 raise ValueError("URL 格式错误，应该是 https://github.com/[owner]/[repo]")
-            return path_parts[0], path_parts[1],real_path
+            return path_parts[0], path_parts[1],real_path,branches
         except Exception as e:
             print(f"[错误] URL 解析失败: {e}")
             sys.exit(1)
@@ -48,7 +49,8 @@ class DownGit:
             sys.exit(1)
 
     def download_file(self, file_path, save_dir):
-        raw_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/master/{file_path}"
+        raw_url = f"https://raw.githubusercontent.com/{self.repo_owner}/{self.repo_name}/{self.branches}/{file_path}"
+        file_path=str((file_path.strip('/').split('/'))[-1])
         save_path = os.path.join(save_dir, file_path)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         try:
