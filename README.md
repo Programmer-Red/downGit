@@ -26,7 +26,7 @@ pip install requests
 
 1. 登录 GitHub。
 2. 进入 **Settings → Developer settings → Personal access tokens → Tokens (classic)**。
-3. 点击 **Generate new token**，选择**Generate new token(Classic)**，填写名称，权限可只勾选 `repo`（公共仓库可不勾选权限）。
+3. 点击 **Generate new token**，选择**Generate new token**，填写名称，权限可只勾选 `repo`（公共仓库可不勾选权限）。
 4. 复制生成的 Token
 
 ### 3. 修改脚本
